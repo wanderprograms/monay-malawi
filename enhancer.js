@@ -1,5 +1,3 @@
-window.sendMoneyConfirmed = false;
-
 function calculateFee(amount) {
   return parseFloat((amount * 0.025).toFixed(2));
 }
@@ -16,15 +14,13 @@ function growBalanceIfDue(balance, lastUpdated) {
   return balance;
 }
 
-function showSendModal({ amount, accountType, fullName, number }, onConfirm) {
+function showSendModal({ amount, accountType, fullName, number }) {
   const fee = calculateFee(amount);
   const total = (amount + fee).toFixed(2);
-
   const dashboard = document.getElementById('dashboard');
   if (dashboard) dashboard.style.display = 'none';
 
   const modal = document.createElement('div');
-  modal.className = 'send-modal';
   modal.innerHTML = `
     <div style="
       position:fixed;
@@ -68,8 +64,8 @@ function showSendModal({ amount, accountType, fullName, number }, onConfirm) {
   document.getElementById('confirmSend').onclick = () => {
     modal.remove();
     if (dashboard) dashboard.style.display = 'block';
-    window.sendMoneyConfirmed = true;
-    document.getElementById('sendMoneyForm').requestSubmit();
+    const sendForm = document.getElementById('sendMoneyForm');
+    sendForm.dispatchEvent(new CustomEvent("confirmedSendMoney"));
   };
 }
 
@@ -103,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ✅ Intercept send form
   sendForm.addEventListener('submit', async function(e) {
-    if (window.sendMoneyConfirmed) return;
     e.preventDefault();
 
     const amount = parseFloat(document.getElementById('amount').value);
@@ -128,26 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn("Recipient name fetch failed:", err);
     }
 
-    showSendModal({ amount, accountType, fullName, number }, async () => {
-      try {
-        const fee = calculateFee(amount);
-        const feeQuery = await db.collection("users").where("phone", "==", "0899535951").limit(1).get();
-        if (!feeQuery.empty) {
-          const feeRef = feeQuery.docs[0].ref;
-          const feeData = feeQuery.docs[0].data();
-          await feeRef.update({
-            balance: feeData.balance + fee,
-            notifications: firebase.firestore.FieldValue.arrayUnion({
-              from: "System",
-              message: `You received MWK ${fee} as transaction fee.`,
-              timestamp: new Date().toISOString()
-            })
-          });
-        }
-      } catch (err) {
-        console.warn("Fee transfer failed:", err);
-      }
-    });
+    showSendModal({ amount, accountType, fullName, number });
   });
 });
 
