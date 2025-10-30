@@ -98,23 +98,20 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('balance').textContent = `Balance: MK ${data.balance.toFixed(2)}`;
     notifications = data.notifications || [];
     document.getElementById('notificationIcon').setAttribute('data-count', notifications.length);
-    document.getElementById('messages').innerHTML = notifications.map(n =>
-      `<div><strong>${n.from}:</strong> ${n.message}</div>`
-    ).join('');
+    document.getElementById('messages').innerHTML = '';
   }
 
   document.getElementById('notificationIcon').addEventListener('click', async () => {
-    await db.collection("users").doc(currentUser).update({ notifications: [] });
-    notifications = [];
-    renderDashboard();
+    const doc = await db.collection("users").doc(currentUser).get();
+    const data = doc.data();
+    notifications = data.notifications || [];
+    document.getElementById('messages').innerHTML = notifications.map(n =>
+      `<div><strong>${n.from}:</strong> ${n.message}</div>`
+    ).join('');
   });
 
-  document.getElementById('sendMoneyForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+  document.getElementById('sendMoneyForm').addEventListener('confirmedSendMoney', async function() {
     clearErrors();
-
-    if (!window.sendMoneyConfirmed) return;
-    window.sendMoneyConfirmed = false;
 
     const recipientPhone = document.getElementById('recipientPhone').value.trim();
     const amount = parseFloat(document.getElementById('amount').value);
@@ -179,7 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // ✅ Tumiza fee ku 0899535951
       const feeQuery = await db.collection("users").where("phone", "==", "0899535951").limit(1).get();
       if (!feeQuery.empty) {
         const feeRef = feeQuery.docs[0].ref;
@@ -187,15 +183,15 @@ document.addEventListener("DOMContentLoaded", () => {
         await feeRef.update({
           balance: feeData.balance + fee,
           notifications: firebase.firestore.FieldValue.arrayUnion({
-            from: senderData.firstName,
-            message: `You paid MWK ${fee} as transaction fee.`,
+            from: "System",
+            message: `You received a transaction fee.`,
             timestamp: new Date().toISOString()
           })
         });
       }
 
       document.getElementById('sendMoneySuccess').textContent =
-        `Money sent to ${accountType.toUpperCase()} successfully.`;
+        `Money sent successfully. Sending fee deducted.`;
       renderDashboard();
       this.reset();
     } catch (error) {
