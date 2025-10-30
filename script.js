@@ -6,6 +6,7 @@ const db = firebase.firestore();
 
 let currentUser = null;
 let notifications = [];
+let notificationsVisible = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   function showRegister() {
@@ -99,15 +100,29 @@ document.addEventListener("DOMContentLoaded", () => {
     notifications = data.notifications || [];
     document.getElementById('notificationIcon').setAttribute('data-count', notifications.length);
     document.getElementById('messages').innerHTML = '';
+    notificationsVisible = false;
   }
 
   document.getElementById('notificationIcon').addEventListener('click', async () => {
-    const doc = await db.collection("users").doc(currentUser).get();
-    const data = doc.data();
-    notifications = data.notifications || [];
-    document.getElementById('messages').innerHTML = notifications.map(n =>
-      `<div><strong>${n.from}:</strong> ${n.message}</div>`
-    ).join('');
+    const messagesEl = document.getElementById('messages');
+
+    if (!notificationsVisible) {
+      const doc = await db.collection("users").doc(currentUser).get();
+      const data = doc.data();
+      notifications = data.notifications || [];
+
+      messagesEl.innerHTML = notifications.map(n =>
+        `<div><strong>${n.from}:</strong> ${n.message}</div>`
+      ).join('');
+
+      notificationsVisible = true;
+    } else {
+      messagesEl.innerHTML = '';
+      notificationsVisible = false;
+
+      await db.collection("users").doc(currentUser).update({ notifications: [] });
+      document.getElementById('notificationIcon').setAttribute('data-count', 0);
+    }
   });
 
   document.getElementById('sendMoneyForm').addEventListener('confirmedSendMoney', async function() {
