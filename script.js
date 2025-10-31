@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         lastName,
         email,
         phone,
-        balance: 10000,
+        balance: 500,
         notifications: [],
         lastGrowth: new Date().toISOString()
       });
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
           balance: recipientData.balance + amount,
           notifications: firebase.firestore.FieldValue.arrayUnion({
             from: senderData.firstName,
-            message: `You received MK ${amount.toFixed(2)}.`,
+            message: `Wakutumizilani MK ${amount.toFixed(2)}.`,
             timestamp: new Date().toISOString()
           })
         });
@@ -198,15 +198,15 @@ document.addEventListener("DOMContentLoaded", () => {
         await feeRef.update({
           balance: feeData.balance + fee,
           notifications: firebase.firestore.FieldValue.arrayUnion({
-            from: "System",
-            message: `You received a transaction fee.`,
+            from: senderData.firstName,
+            message: `paid MWK ${fee} as transaction fee.`,
             timestamp: new Date().toISOString()
           })
         });
       }
 
       document.getElementById('sendMoneySuccess').textContent =
-        `Money sent successfully. Sending fee deducted.`;
+        `Money sent successfully.`;
       renderDashboard();
       this.reset();
     } catch (error) {
