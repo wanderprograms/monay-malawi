@@ -20,7 +20,10 @@
         <label for="identifierLogin">Email or Phone Number</label>
         <input type="text" id="identifierLogin" required />
         <label for="passwordLogin">Password</label>
+        <div class="password-wrapper">
         <input type="password" id="passwordLogin" minlength="6" required />
+        <span class="toggle-eye" onclick="document.getElementById('passwordLogin').type = document.getElementById('passwordLogin').type === 'password' ? 'text' : 'password'">👁️ show</span>
+      </div  
         <button type="submit">Login</button>
         <p>New user? <button type="button" id="showRegisterBtn">Register here</button></p>
         <p id="loginError" class="error"></p>
@@ -40,7 +43,10 @@
         <label for="phoneRegister">Phone Number</label>
         <input type="tel" id="phoneRegister" pattern="[0-9]{10,15}" required />
         <label for="passwordRegister">Password</label>
+        <div class="password-wrapper">
         <input type="password" id="passwordRegister" minlength="6" required />
+        <span class="toggle-eye" onclick="document.getElementById('passwordRegister').type = document.getElementById('passwordRegister').type === 'password' ? 'text' : 'password'">👁️ show</span>
+      </div> 
         <button type="submit">Register</button>
         <p>Already registered? <button type="button" id="showLoginBtn">Login here</button></p>
         <p id="registerError" class="error"></p>
@@ -70,7 +76,7 @@
           </select>
           <button type="submit">Send</button>
           <p id="sendMoneyError" class="error"></p>
-          <p id="sendMoneySuccess" class="success"></p>
+          <p id="sendMoneySuccess" style="color: green;"></p>
         </form>
       </section>
       <button id="logoutBtn">Logout</button>
@@ -81,4 +87,5 @@
   <script src="enhancer.js"></script>
 </body>
 </html>
+
 
