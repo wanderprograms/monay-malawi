@@ -52,6 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const uid = userCredential.user.uid;
 
+       // ✅ Tumiza email verification
+      if (!userCredential.user.emailVerified) {
+        await userCredential.user.sendEmailVerification();
+        alert("Tatumiza email yotsimikizira. Chonde fufuzani inbox yanu.");
+      }
+
       await db.collection("users").doc(uid).set({
         firstName,
         lastName,
@@ -85,6 +91,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const userCredential = await auth.signInWithEmailAndPassword(email, password);
       currentUser = userCredential.user.uid;
+      
+      // ✅ Onetsetsa kuti user watsimikizika
+      if (!user.emailVerified) {
+        alert("Chonde verify email yanu kaye. Tiyambitseni kuchokera ku email.");
+        await auth.signOut();
+        return;
+      }
+
+      currentUser = user.uid;
       showDashboard();
       this.reset();
     } catch (error) {
