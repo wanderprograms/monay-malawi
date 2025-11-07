@@ -199,7 +199,55 @@ toggle-eye {
   color: #555;
   user-select: none;
 } 
- 
+
+#resetTrigger {
+  margin-top: 10px;
+  text-align: center;
+}
+
+#showResetFormBtn {
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#resetFormSection {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+#resetFormSection input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#resetPasswordBtn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#resetPasswordBtn:hover {
+  background-color: #218838;
+}
+
+#resetMessage {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #333;
+} 
 
 /* 🔹 Responsive Design */
 @media (max-width: 600px) {
