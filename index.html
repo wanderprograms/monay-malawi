@@ -28,7 +28,18 @@
         <p>New user? <button type="button" id="showRegisterBtn">Register here</button></p>
         <p id="loginError" class="error"></p>
       </form>
-    </section>
+      <!-- 🔁 Reset Password Trigger -->
+      <div id="resetTrigger">
+      <button id="showResetFormBtn">Wayiwala Password?</button>
+    </div>
+
+      <!-- 🔐 Hidden Reset Form -->
+    <div id="resetFormSection" style="display: none;">
+    <input type="email" id="resetEmail" placeholder="Lowetsani email yanu" />
+    <button id="resetPasswordBtn">Tuma Email Yosintha Password</button>
+    <p id="resetMessage"></p>
+   </div>
+</section>
 
     <!-- Register Section -->
     <section id="registerSection" style="display:none;">
@@ -87,6 +98,7 @@
   <script src="enhancer.js"></script>
 </body>
 </html>
+
 
 
 
