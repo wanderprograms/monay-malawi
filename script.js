@@ -107,6 +107,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // 🔁 Show reset form when button is clicked
+document.getElementById('showResetFormBtn').addEventListener('click', () => {
+  document.getElementById('resetFormSection').style.display = 'block';
+  document.getElementById('resetTrigger').style.display = 'none';
+});
+
+// 🔐 Handle password reset
+document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
+  const email = document.getElementById('resetEmail').value.trim();
+  const message = document.getElementById('resetMessage');
+
+  if (!email) {
+    message.textContent = "⚠️ Lowetsani email yanu kaye.";
+    return;
+  }
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    message.textContent = "✅ Tatumiza email yosintha password. Fufuzani inbox yanu.";
+  } catch (error) {
+    message.textContent = "❌ Zalephera: " + error.message;
+  }
+});
+
   async function renderDashboard() {
     const doc = await db.collection("users").doc(currentUser).get();
     const data = doc.data();
